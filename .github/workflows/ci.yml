@@ -1,36 +1,37 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
-  check:
-    name: Node.js ${{ matrix.node-version }}
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [22, 24]
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Run checks
-        run: pnpm run check
+  ci:
+    name: CI
+    # MiKode CI v2.0.0 (capability-composed)
+    uses: Mikode13/.github/.github/workflows/ci.yml@813d80713d5aa375023421674719267028aa01e5
+    with:
+      # Source: this repository ships consumable technical configuration (src/base.js and
+      # src/react.js) plus its own eslint, prettier and vitest configuration.
+      source: true
+      # Tests: publishing consumable technical configuration puts this repository in scope
+      # for the testing standard; tests/integration lints real fixture projects with the
+      # presets it ships.
+      tests: true
+      # Package: this repository publishes an npm package, so the tarball needs artifact
+      # validation before release.
+      package: true
+      # Build, Documentation and End-to-end stay off: the published files are the source
+      # files, there is no build step, and there is no documentation invariant beyond the
+      # README. Enabling either would require a placeholder that always succeeds, which the
+      # CI standard forbids.
