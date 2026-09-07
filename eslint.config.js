@@ -4,6 +4,6 @@ export default [
 	...base,
 	{
 		name: '@mikode13/code-quality/internal-ignores',
-		ignores: ['test/fixtures/**'],
+		ignores: ['tests/support/fixtures/**'],
 	},
 ];

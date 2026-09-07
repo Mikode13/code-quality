@@ -1,6 +1,6 @@
 {
 	"name": "@mikode13/code-quality",
-	"version": "0.1.0",
+	"version": "0.0.0-development",
 	"description": "Shared ESLint code-quality configuration for MiKode projects.",
 	"type": "module",
 	"packageManager": "pnpm@11.17.0",
@@ -16,23 +16,24 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/mikode13/code-quality.git"
+		"url": "git+https://github.com/Mikode13/code-quality.git"
 	},
 	"publishConfig": {
 		"access": "public"
 	},
 	"license": "SEE LICENSE IN LICENSE",
 	"scripts": {
-		"prepare": "node scripts/verify-pnpm.mjs",
-		"check": "pnpm run format:check && pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run audit:prod && pnpm run pack:check",
-		"audit:prod": "pnpm audit --prod",
+		"prepare": "mikode-git-hooks install",
 		"format": "prettier . --write",
 		"format:check": "prettier . --check",
 		"lint": "eslint . --max-warnings 0",
 		"lint:fix": "eslint . --fix",
-		"typecheck": "node --check eslint.config.js && node --check prettier.config.mjs && node --check scripts/verify-pnpm.mjs && node --check src/base.js && node --check src/react.js && node --check test/configs.test.js",
-		"test": "node --test test/configs.test.js",
-		"pack:check": "pnpm pack --dry-run"
+		"typecheck": "tsc --noEmit && tsc --noEmit -p tests && node --check src/base.js && node --check src/react.js && node --check eslint.config.js && node --check prettier.config.mjs",
+		"test": "pnpm run test:integration",
+		"test:integration": "vitest run --project integration",
+		"check": "pnpm run format:check && pnpm run lint && pnpm run typecheck",
+		"audit:prod": "pnpm audit --prod",
+		"pack:check": "node scripts/pack-check.mjs"
 	},
 	"dependencies": {
 		"@eslint-react/eslint-plugin": "5.18.0",
@@ -50,9 +51,13 @@
 	},
 	"devDependencies": {
 		"@mikode13/code-style": "0.1.0",
+		"@mikode13/git-hooks": "0.1.0",
+		"@mikode13/tsconfig": "0.1.0",
+		"@types/node": "24.13.3",
 		"@types/react": "19.2.17",
 		"eslint": "10.8.0",
 		"prettier": "3.9.6",
-		"react": "19.2.8"
+		"react": "19.2.8",
+		"vitest": "4.1.10"
 	}
 }

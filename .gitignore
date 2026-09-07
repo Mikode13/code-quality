@@ -6,3 +6,6 @@ dist/
 *.swp
 *.swo
 *.tgz
+
+# Managed by @mikode13/git-hooks
+.husky/_/

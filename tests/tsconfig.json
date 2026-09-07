@@ -1,0 +1,14 @@
+{
+	"extends": "@mikode13/tsconfig/node",
+	"compilerOptions": {
+		"types": ["node"],
+		"noEmit": true,
+		// Vitest resolves TypeScript itself, so a suite imports its support modules by their
+		// real path rather than a `.js` path that never exists on disk.
+		"allowImportingTsExtensions": true
+	},
+	// `support/fixtures` holds deliberately invalid code that the suites lint on purpose.
+	// Type checking it here would report the very errors the tests assert ESLint reports.
+	"include": ["integration/**/*.ts", "support/**/*.ts"],
+	"exclude": ["support/fixtures/**"]
+}

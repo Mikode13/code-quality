@@ -146,18 +146,24 @@ Every `eslint-disable` directive in a consuming project must include a comment e
 why the shared rule does not apply there. Project-wide rule changes should be appended in
 the local flat configuration and documented in that project's README.
 
-## Verification and manual publishing
+## Development
 
 ```sh
 pnpm install --frozen-lockfile
-pnpm run check
-pnpm login
-pnpm publish --access public
+pnpm run check       # prettier --check, eslint --max-warnings 0, tsc --noEmit
+pnpm test            # lints real fixture projects with the presets this package ships
+pnpm run pack:check  # asserts the exact published file set
+pnpm run audit:prod  # production dependency audit, run deliberately rather than on every check
 ```
 
-The check includes a production dependency audit. Publishing remains manual while MiKode
-decides its cross-project release and versioning policy, and the first release still
-requires the adoption validations in the MiKode code-quality standard.
+`pre-push` runs `pnpm run check && pnpm test`. CI repeats both and adds `pack:check`.
+
+## Releases
+
+Versions are derived from Conventional Commit titles by `semantic-release` and published
+automatically from `main`. The npm registry, Git tags, and GitHub Releases are the
+authoritative history; the `version` field in this repository stays at
+`0.0.0-development` and is never committed with a real version.
 
 ## License
 
