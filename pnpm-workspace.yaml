@@ -1,3 +1,6 @@
 allowBuilds:
   # Native binary resolution for eslint-import-resolver-typescript (via eslint-plugin-import-x).
   unrs-resolver: true
+
+overrides:
+  brace-expansion: 5.0.9
