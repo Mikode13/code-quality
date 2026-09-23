@@ -6,6 +6,7 @@ import globals from 'globals';
 import base from './base.js';
 
 const reactFiles = ['**/*.{jsx,tsx}'];
+const reactSourceFiles = ['**/*.{js,mjs,cjs,jsx,ts,mts,cts,tsx}'];
 
 export default [
 	...base,
@@ -61,7 +62,7 @@ export default [
 	{
 		...reactHooks.configs.flat.recommended,
 		name: '@mikode13/code-quality/react-hooks',
-		files: reactFiles,
+		files: reactSourceFiles,
 	},
 	{
 		...jsxA11y.configs.recommended,

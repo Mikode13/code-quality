@@ -21,8 +21,39 @@ permissions:
   contents: read
 
 jobs:
+  audit:
+    name: audit production dependencies
+    # Run the network-dependent advisory scan only for a release attempt. A failed audit
+    # leaves the reusable publication job blocked by its needs relationship below.
+    if: >-
+      ${{ github.event_name == 'workflow_dispatch' }}
+        || (github.event.workflow_run.conclusion == 'success'
+        && github.event.workflow_run.event == 'push'
+        && github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository at the released commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.sha || github.event.workflow_run.head_sha }}
+
+      - name: Install pnpm and Node.js
+        uses: pnpm/setup@84cb39b217b10273981911c288cd62326dc7c6d2 # v2.0.2
+        with:
+          version: 11.17.0
+          runtime: node@24
+          install: false
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Audit production dependencies
+        run: pnpm run audit:prod
   release:
     name: release
+    needs: audit
     # workflow_run fires for every CI completion, including pull request runs and
     # failures. Only a successful push run on main may reach the privileged reusable
     # workflow, which independently re-verifies all of this through the GitHub API

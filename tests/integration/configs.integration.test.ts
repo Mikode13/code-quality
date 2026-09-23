@@ -95,6 +95,8 @@ describe('the React preset', () => {
 		const messages = await lintFixture(reactFixture, react, [
 			'src/valid.tsx',
 			'src/react-18-valid.tsx',
+			'src/react-hooks-valid.ts',
+			'src/react-hooks-valid.js',
 		]);
 
 		expect(messages).toStrictEqual([]);
@@ -107,4 +109,14 @@ describe('the React preset', () => {
 		expect(rules).toContain('react-hooks/rules-of-hooks');
 		expect(rules).toContain('jsx-a11y-x/alt-text');
 	});
+
+	it.each(['src/react-hooks-invalid.ts', 'src/react-hooks-invalid.js'])(
+		'reports Hooks failures in %s custom hooks',
+		async pattern => {
+			const rules = await reportedRules(reactFixture, react, [pattern]);
+
+			expect(rules).toContain('react-hooks/rules-of-hooks');
+			expect(rules).toContain('react-hooks/exhaustive-deps');
+		},
+	);
 });
