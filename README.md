@@ -15,8 +15,8 @@ projects.
 The package uses ESLint 10 with `@eslint-react/eslint-plugin` and
 `eslint-plugin-jsx-a11y-x`. These normal, non-prerelease releases support ESLint 10 and
 avoid the vulnerable `minimatch` 3 dependency line used by the earlier React plugin
-selection. All tool dependencies are pinned exactly, and `pnpm run check` audits the
-production graph. The decision is tracked by
+selection. All tool dependencies are pinned exactly. The production graph is audited by
+`pnpm run audit:prod` on the release path. The decision is tracked by
 [ADR 0007](https://github.com/mikode13/engineering/blob/main/adr/0007-use-eslint-10-with-modern-react-plugins.md).
 
 `eslint-plugin-jsx-a11y-x` remains on a pre-1.0 version line. Its API is contained behind
